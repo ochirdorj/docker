@@ -1,0 +1,26 @@
+#set a base image
+FROM python:3.11.13-alpine3.22
+
+WORKDIR /user/src/app
+
+#COPY vs ADD
+COPY main.py /user/src/app/main.py
+COPY requirements.txt /user/src/app/requirements.txt
+COPY tasks.json /user/src/app/tasks.json
+
+# Execute build commands
+RUN pip install -r requirements.txt
+
+RUN adduser pythonuser -s /sbin/nologin --disabled-password
+
+ENV PYTHONDONTWRITEBYTECODE=1
+
+ENV PYTHONUNBUFFERED=1
+
+USER pythonuser
+
+EXPOSE 8000
+
+#Start the application - ENTRYPOINT vs CMD
+
+CMD uvicorn main:app --reload --host 0.0.0.0
